@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>开始测试 - 人生阶段画像器</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #171717;
+        --muted: #68645f;
+        --paper: #f4f2ee;
+        --surface: #fffdfa;
+        --soft: #eef2f1;
+        --line: #d8d4cd;
+        --accent: #1f5148;
+        --accent-deep: #143a34;
+        --rust: #a54f2b;
+        --risk: #8f2f25;
+        --shadow: 0 22px 64px rgba(23, 23, 23, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(90deg, rgba(23, 23, 23, 0.045) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(23, 23, 23, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 42px 42px;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+      }
+
+      main {
+        width: min(720px, 100%);
+        margin: 0 auto;
+        padding: 24px 14px 42px;
+      }
+
+      .nav {
+        margin-bottom: 18px;
+      }
+
+      .nav a {
+        color: var(--accent-deep);
+        font-size: 14px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .nav a:hover {
+        text-decoration: underline;
+      }
+
+      .start-panel {
+        display: grid;
+        gap: 20px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 18px;
+        background: rgba(255, 253, 250, 0.94);
+        box-shadow: var(--shadow);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        width: fit-content;
+        align-items: center;
+        gap: 10px;
+        color: var(--accent-deep);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 28px;
+        height: 1px;
+        background: var(--rust);
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 10em;
+        font-size: clamp(38px, 12vw, 68px);
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+
+      .intro {
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.85;
+      }
+
+      .facts {
+        display: grid;
+        gap: 10px;
+      }
+
+      .fact {
+        display: grid;
+        grid-template-columns: 94px 1fr;
+        gap: 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: var(--surface);
+      }
+
+      .fact strong {
+        color: var(--accent-deep);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .fact span {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      .privacy,
+      .disclaimer {
+        display: grid;
+        gap: 8px;
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+      }
+
+      h2 {
+        color: var(--rust);
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .privacy p,
+      .disclaimer p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+      }
+
+      .disclaimer {
+        border-top-color: rgba(143, 47, 37, 0.22);
+      }
+
+      .disclaimer h2 {
+        color: var(--risk);
+      }
+
+      .actions {
+        display: grid;
+        gap: 10px;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 54px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--accent);
+        border-radius: 8px;
+        padding: 0 22px;
+        background: var(--accent);
+        color: #fffdfa;
+        font-size: 16px;
+        font-weight: 900;
+        text-decoration: none;
+        box-shadow: 0 15px 32px rgba(31, 81, 72, 0.18);
+        transition:
+          transform 160ms ease,
+          background 160ms ease,
+          box-shadow 160ms ease;
+      }
+
+      .button.secondary {
+        background: transparent;
+        color: var(--accent-deep);
+        box-shadow: none;
+      }
+
+      .button:hover {
+        background: var(--accent-deep);
+        color: #fffdfa;
+        transform: translateY(-1px);
+        box-shadow: 0 18px 40px rgba(20, 58, 52, 0.22);
+      }
+
+      .button:focus-visible,
+      .nav a:focus-visible {
+        outline: 3px solid rgba(165, 79, 43, 0.35);
+        outline-offset: 4px;
+      }
+
+      @media (min-width: 720px) {
+        main {
+          padding: 46px 22px 72px;
+        }
+
+        .start-panel {
+          padding: 34px;
+        }
+
+        .actions {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav class="nav" aria-label="页面导航">
+        <a href="/">返回首页</a>
+      </nav>
+
+      <section class="start-panel" aria-labelledby="page-title">
+        <div class="eyebrow">测试开始前</div>
+        <h1 id="page-title">先别急着回答，先知道这份测试在看什么</h1>
+        <p class="intro">
+          这不是给你贴标签，而是帮你看清当下最主要的人生阶段：你卡在哪里、靠什么防御、下一步该先解决什么。
+        </p>
+
+        <div class="facts" aria-label="测试说明">
+          <div class="fact">
+            <strong>测试目的</strong>
+            <span>识别你当前的人生阶段、核心矛盾和未来 30 天最值得推进的行动。</span>
+          </div>
+          <div class="fact">
+            <strong>预计时间</strong>
+            <span>约 3 分钟，不需要准备，也不需要写长答案。</span>
+          </div>
+          <div class="fact">
+            <strong>题目数量</strong>
+            <span>共 <span id="questionCount">15</span> 题，每题从 A/B/C/D 中选择最接近你的答案。</span>
+          </div>
+        </div>
+
+        <section class="privacy" aria-labelledby="privacy-title">
+          <h2 id="privacy-title">隐私说明</h2>
+          <p>本版本不需要登录，不接数据库。你的答案只会临时保存在当前浏览器，用来生成本地结果报告。</p>
+        </section>
+
+        <section class="disclaimer" aria-labelledby="disclaimer-title">
+          <h2 id="disclaimer-title">免责声明</h2>
+          <p>本测试仅用于自我观察和个人成长参考，不构成医学、心理诊断或职业/财务决策建议。如果你正在经历持续痛苦或严重压力，请优先寻求专业支持。</p>
+        </section>
+
+        <div class="actions">
+          <a class="button" href="/quiz">开始答题</a>
+          <a class="button secondary" href="/">我再想想</a>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      async function updateQuestionCount() {
+        try {
+          const response = await fetch("/data/questions.json");
+
+          if (!response.ok) {
+            return;
+          }
+
+          const questions = await response.json();
+          document.querySelector("#questionCount").textContent = questions.length;
+        } catch (error) {
+          console.warn("题目数量读取失败，使用默认数量。");
+        }
+      }
+
+      updateQuestionCount();
+    </script>
+  </body>
+</html>

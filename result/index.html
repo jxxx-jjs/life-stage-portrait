@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>人生阶段分析报告 - 人生阶段画像器</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #171717;
+        --muted: #68645f;
+        --paper: #f4f2ee;
+        --surface: #fffdfa;
+        --soft: #eef2f1;
+        --line: #d8d4cd;
+        --accent: #1f5148;
+        --accent-deep: #143a34;
+        --rust: #a54f2b;
+        --risk: #8f2f25;
+        --blue: #2d5775;
+        --shadow: 0 22px 64px rgba(23, 23, 23, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(90deg, rgba(23, 23, 23, 0.045) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(23, 23, 23, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 42px 42px;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+      }
+
+      main {
+        width: min(760px, 100%);
+        margin: 0 auto;
+        padding: 22px 14px 44px;
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        margin: 0 0 18px;
+      }
+
+      .nav a {
+        color: var(--accent-deep);
+        font-size: 14px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .nav a:hover {
+        text-decoration: underline;
+      }
+
+      .notice {
+        margin-bottom: 16px;
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--rust);
+        border-radius: 8px;
+        padding: 13px 14px;
+        background: rgba(255, 253, 250, 0.92);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .notice.is-error {
+        border-left-color: var(--risk);
+        color: var(--risk);
+      }
+
+      .notice[hidden] {
+        display: none;
+      }
+
+      .report {
+        display: grid;
+        gap: 14px;
+      }
+
+      .hero-card,
+      .insight-card,
+      .risk-card,
+      .signature-card,
+      .share-card,
+      .disclaimer-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 253, 250, 0.94);
+        box-shadow: var(--shadow);
+      }
+
+      .hero-card {
+        display: grid;
+        gap: 24px;
+        padding: 24px 18px 22px;
+      }
+
+      .report-kicker {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .report-kicker span:first-child {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .report-kicker span:first-child::before {
+        content: "";
+        width: 28px;
+        height: 1px;
+        background: var(--rust);
+      }
+
+      .serial {
+        color: var(--rust);
+        font-variant-numeric: tabular-nums;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 12em;
+        color: var(--ink);
+        font-size: clamp(42px, 14vw, 78px);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .core-judgment {
+        border-left: 4px solid var(--accent);
+        padding-left: 14px;
+        color: var(--accent-deep);
+        font-size: clamp(18px, 5vw, 25px);
+        font-weight: 900;
+        line-height: 1.55;
+      }
+
+      .score-board {
+        display: grid;
+        gap: 12px;
+        border-top: 1px solid var(--line);
+        padding-top: 20px;
+      }
+
+      .score-line {
+        display: grid;
+        gap: 7px;
+      }
+
+      .score-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .track {
+        height: 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--soft);
+        overflow: hidden;
+      }
+
+      .track span {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--rust));
+      }
+
+      .share-section {
+        display: grid;
+        gap: 10px;
+      }
+
+      .share-heading {
+        padding: 0 4px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .share-card {
+        position: relative;
+        display: grid;
+        gap: 18px;
+        min-height: 430px;
+        overflow: hidden;
+        padding: 24px 18px;
+        background:
+          linear-gradient(135deg, rgba(31, 81, 72, 0.12), rgba(165, 79, 43, 0.08)),
+          var(--surface);
+      }
+
+      .share-card::before {
+        content: "";
+        position: absolute;
+        inset: 16px;
+        border: 1px solid rgba(31, 81, 72, 0.18);
+        border-radius: 6px;
+        pointer-events: none;
+      }
+
+      .share-top,
+      .share-bottom {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .share-top span:first-child {
+        color: var(--accent-deep);
+      }
+
+      .share-main {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        align-content: center;
+        gap: 18px;
+        min-height: 280px;
+      }
+
+      .share-title {
+        color: var(--ink);
+        font-size: clamp(38px, 13vw, 62px);
+        font-weight: 900;
+        line-height: 1;
+      }
+
+      .share-judgment {
+        border-left: 4px solid var(--accent);
+        padding-left: 14px;
+        color: var(--accent-deep);
+        font-size: clamp(18px, 5vw, 24px);
+        font-weight: 900;
+        line-height: 1.55;
+      }
+
+      .share-conflict {
+        display: grid;
+        gap: 8px;
+        border-top: 1px solid rgba(31, 81, 72, 0.18);
+        padding-top: 16px;
+      }
+
+      .share-conflict strong {
+        color: var(--rust);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .share-conflict span {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.75;
+      }
+
+      .insight-card,
+      .risk-card {
+        display: grid;
+        gap: 14px;
+        padding: 20px 18px;
+      }
+
+      .section-label {
+        color: var(--rust);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      h2 {
+        color: var(--ink);
+        font-size: clamp(24px, 7vw, 36px);
+        line-height: 1.18;
+        letter-spacing: 0;
+      }
+
+      .section-text {
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.85;
+      }
+
+      .pattern-note {
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+      }
+
+      .pattern-note strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--blue);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .risk-card {
+        border-left: 4px solid var(--risk);
+      }
+
+      .risk-card h2 {
+        color: var(--risk);
+      }
+
+      .warning-line {
+        border-top: 1px solid rgba(143, 47, 37, 0.22);
+        padding-top: 14px;
+        color: var(--risk);
+        font-size: 17px;
+        font-weight: 900;
+        line-height: 1.65;
+      }
+
+      .plan-section {
+        display: grid;
+        gap: 12px;
+        padding: 8px 0;
+      }
+
+      .plan-heading {
+        display: grid;
+        gap: 10px;
+        padding: 0 4px;
+      }
+
+      .plan-heading p {
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.75;
+      }
+
+      .plan-list {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .plan-item {
+        display: grid;
+        grid-template-columns: 74px 1fr;
+        gap: 12px;
+        align-items: start;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 15px;
+        background: var(--surface);
+        box-shadow: 0 12px 34px rgba(23, 23, 23, 0.06);
+      }
+
+      .plan-item strong {
+        color: var(--accent-deep);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .plan-item span {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.75;
+      }
+
+      .signature-card {
+        display: grid;
+        gap: 14px;
+        padding: 24px 18px;
+        background:
+          linear-gradient(135deg, rgba(31, 81, 72, 0.08), rgba(165, 79, 43, 0.08)),
+          var(--surface);
+      }
+
+      .signature-card .section-label {
+        color: var(--accent-deep);
+      }
+
+      .signature {
+        color: var(--ink);
+        font-size: clamp(25px, 8vw, 44px);
+        font-weight: 900;
+        line-height: 1.25;
+      }
+
+      .stop-line {
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.75;
+      }
+
+      .stop-line strong {
+        color: var(--rust);
+      }
+
+      .disclaimer-card {
+        display: grid;
+        gap: 8px;
+        border-left: 4px solid var(--risk);
+        padding: 18px;
+      }
+
+      .disclaimer-card h2 {
+        color: var(--risk);
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .disclaimer-card p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding-top: 4px;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 52px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--accent);
+        border-radius: 8px;
+        padding: 0 18px;
+        background: var(--accent);
+        color: #fffdfa;
+        font-size: 16px;
+        font-weight: 900;
+        text-decoration: none;
+        box-shadow: 0 15px 32px rgba(31, 81, 72, 0.18);
+        transition:
+          transform 160ms ease,
+          background 160ms ease,
+          box-shadow 160ms ease;
+      }
+
+      .button.secondary {
+        background: transparent;
+        color: var(--accent-deep);
+        box-shadow: none;
+      }
+
+      .button:hover {
+        background: var(--accent-deep);
+        color: #fffdfa;
+        transform: translateY(-1px);
+        box-shadow: 0 18px 40px rgba(20, 58, 52, 0.22);
+      }
+
+      .button:focus-visible,
+      .nav a:focus-visible {
+        outline: 3px solid rgba(165, 79, 43, 0.35);
+        outline-offset: 4px;
+      }
+
+      @media (min-width: 720px) {
+        main {
+          padding: 46px 22px 72px;
+        }
+
+        .report {
+          gap: 18px;
+        }
+
+        .hero-card {
+          padding: 34px 34px 30px;
+        }
+
+        .insight-card,
+        .risk-card,
+        .signature-card {
+          padding: 28px 30px;
+        }
+
+        .share-card {
+          min-height: 460px;
+          padding: 32px;
+        }
+
+        .disclaimer-card {
+          padding: 22px 24px;
+        }
+
+        .score-board {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 18px;
+        }
+
+        .actions {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav class="nav" aria-label="页面导航">
+        <a href="/">返回首页</a>
+        <a href="/quiz">重新测试</a>
+      </nav>
+
+      <div class="notice" id="notice" hidden aria-live="polite">
+        正在加载分析数据...
+      </div>
+
+      <article class="report" aria-labelledby="stage-title">
+        <header class="hero-card">
+          <div class="report-kicker">
+            <span>人生阶段分析报告</span>
+            <span class="serial">LOCAL / 01</span>
+          </div>
+
+          <h1 id="stage-title">报告生成中</h1>
+          <p class="core-judgment" id="core-judgment"></p>
+
+          <div class="score-board" aria-label="阶段特征分布">
+            <div class="score-line">
+              <div class="score-row">
+                <span id="score-label-1">准备依赖度</span>
+                <span id="score-value-1">0%</span>
+              </div>
+              <div class="track"><span id="score-bar-1" style="width: 0%"></span></div>
+            </div>
+            <div class="score-line">
+              <div class="score-row">
+                <span id="score-label-2">行动启动力</span>
+                <span id="score-value-2">0%</span>
+              </div>
+              <div class="track"><span id="score-bar-2" style="width: 0%"></span></div>
+            </div>
+            <div class="score-line">
+              <div class="score-row">
+                <span id="score-label-3">现实反馈量</span>
+                <span id="score-value-3">0%</span>
+              </div>
+              <div class="track"><span id="score-bar-3" style="width: 0%"></span></div>
+            </div>
+          </div>
+        </header>
+
+        <section class="share-section" aria-labelledby="share-title">
+          <div class="share-heading" id="share-title">分享卡片</div>
+          <div class="share-card" aria-label="可截图分享的结果卡片">
+            <div class="share-top">
+              <span>人生阶段画像器</span>
+              <span>RESULT CARD</span>
+            </div>
+            <div class="share-main">
+              <div class="share-title" id="share-stage-title">报告生成中</div>
+              <p class="share-judgment" id="share-judgment"></p>
+              <p class="share-conflict">
+                <strong>核心矛盾</strong>
+                <span id="share-conflict"></span>
+              </p>
+            </div>
+            <div class="share-bottom">
+              <span>life-stage-portrait</span>
+              <span>冷静、真实、扎心</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="insight-card" aria-labelledby="conflict-title">
+          <div class="section-label">01 / 当前核心矛盾</div>
+          <h2 id="conflict-title"></h2>
+          <p class="section-text" id="conflict-text"></p>
+        </section>
+
+        <section class="insight-card" aria-labelledby="pattern-title">
+          <div class="section-label">02 / 你的行为模式分析</div>
+          <h2 id="pattern-title"></h2>
+          <p class="section-text" id="pattern-text"></p>
+          <p class="section-text pattern-note">
+            <strong>你真正逃避的东西</strong>
+            <span id="escape-text"></span>
+          </p>
+        </section>
+
+        <section class="risk-card" aria-labelledby="risk-title">
+          <div class="section-label">03 / 最大风险提醒</div>
+          <h2 id="risk-title"></h2>
+          <p class="section-text" id="risk-text"></p>
+          <p class="warning-line" id="warning-text"></p>
+        </section>
+
+        <section class="plan-section" aria-labelledby="plan-title">
+          <div class="plan-heading">
+            <div class="section-label">04 / 未来 30 天行动建议</div>
+            <h2 id="plan-title"></h2>
+            <p id="plan-intro"></p>
+          </div>
+          <ol class="plan-list" id="action-plan"></ol>
+        </section>
+
+        <section class="signature-card" aria-labelledby="signature-title">
+          <div class="section-label" id="signature-title">05 / 请记住这一句</div>
+          <p class="signature" id="signature-text"></p>
+          <p class="stop-line">
+            <strong>现在最该停止：</strong>
+            <span id="stop-text"></span>
+          </p>
+        </section>
+
+        <section class="disclaimer-card" aria-labelledby="report-disclaimer-title">
+          <h2 id="report-disclaimer-title">免责声明</h2>
+          <p>本报告基于本地规则和你的选择生成，仅用于自我观察与个人成长参考，不构成医学、心理诊断、职业或财务建议。若你正处于持续痛苦、焦虑或高压状态，请优先寻求专业支持。</p>
+        </section>
+
+        <footer class="actions">
+          <a class="button" href="/quiz">重新测试</a>
+          <a class="button secondary" href="/">回到首页</a>
+        </footer>
+      </article>
+    </main>
+
+    <script>
+      let typeNames = {};
+      let typeOrder = [];
+      let scoreMap = {};
+      let reports = {};
+
+      async function loadJson(url) {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`Failed to load ${url}.`);
+        }
+
+        return response.json();
+      }
+
+      async function loadReportData() {
+        const [scoring, reportTemplates] = await Promise.all([
+          loadJson("/data/scoring.json"),
+          loadJson("/data/reports.json")
+        ]);
+
+        typeOrder = scoring.typeOrder;
+        scoreMap = scoring.scoreMap;
+        reports = reportTemplates;
+        typeNames = Object.fromEntries(
+          Object.entries(reports).map(([type, report]) => [type, report.title])
+        );
+      }
+
+      function getStoredAnswers() {
+        try {
+          const raw = sessionStorage.getItem("lifeStageQuizAnswers");
+
+          if (!raw) {
+            return null;
+          }
+
+          const saved = JSON.parse(raw);
+          return saved.answers || null;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function hasCompleteAnswers(answers) {
+        const allowed = new Set(["A", "B", "C", "D"]);
+        return Object.keys(scoreMap).every((questionId) => {
+          return answers && allowed.has(answers[questionId]);
+        });
+      }
+
+      function calculateResult(answers) {
+        const scores = Object.fromEntries(typeOrder.map((type) => [type, 0]));
+
+        Object.entries(scoreMap).forEach(([questionId, options]) => {
+          const answer = answers[questionId];
+          const type = options[answer];
+
+          if (type) {
+            scores[type] += 1;
+          }
+        });
+
+        const winner = typeOrder.reduce((currentWinner, type) => {
+          return scores[type] > scores[currentWinner] ? type : currentWinner;
+        }, typeOrder[0]);
+
+        return { winner, scores };
+      }
+
+      function setText(selector, text) {
+        document.querySelector(selector).textContent = text;
+      }
+
+      function renderScores(report) {
+        report.scores.forEach(([label, value], index) => {
+          const number = index + 1;
+
+          setText(`#score-label-${number}`, label);
+          setText(`#score-value-${number}`, `${value}%`);
+          document.querySelector(`#score-bar-${number}`).style.width = `${value}%`;
+        });
+      }
+
+      function renderPlan(plan) {
+        document.querySelector("#action-plan").innerHTML = plan
+          .map((item) => {
+            const period = Array.isArray(item) ? item[0] : item.period;
+            const text = Array.isArray(item) ? item[1] : item.text;
+
+            return `
+              <li class="plan-item">
+                <strong>${period}</strong>
+                <span>${text}</span>
+              </li>
+            `;
+          })
+          .join("");
+      }
+
+      function renderReportData(report) {
+        const judgment = report.judgment || report.summary;
+        const patternTitle = report.patternTitle || report.escapeTitle;
+        const patternText = report.patternText || report.escapeText;
+        const signature = report.signature || report.direction;
+
+        document.title = `${report.title} - 人生阶段分析报告`;
+        setText("#stage-title", report.title);
+        setText("#core-judgment", judgment);
+        setText("#share-stage-title", report.title);
+        setText("#share-judgment", judgment);
+        setText("#share-conflict", report.conflictTitle);
+        setText("#conflict-title", report.conflictTitle);
+        setText("#conflict-text", report.conflictText);
+        setText("#pattern-title", patternTitle);
+        setText("#pattern-text", patternText);
+        setText("#escape-text", report.escapeText);
+        setText("#risk-title", report.riskTitle);
+        setText("#risk-text", report.riskText);
+        setText("#warning-text", report.warning);
+        setText("#plan-title", report.planTitle);
+        setText("#plan-intro", report.planIntro);
+        setText("#signature-text", signature);
+        setText("#stop-text", report.stop);
+        renderScores(report);
+        renderPlan(report.plan);
+      }
+
+      function renderReport(typeKey, scores) {
+        const report = reports[typeKey];
+
+        renderReportData(report);
+
+        console.log("本地分析结果", {
+          type: typeNames[typeKey],
+          scores
+        });
+      }
+
+      function setNotice(message, isError = false) {
+        const notice = document.querySelector("#notice");
+
+        notice.textContent = message;
+        notice.hidden = false;
+        notice.classList.toggle("is-error", isError);
+      }
+
+      function hideNotice() {
+        const notice = document.querySelector("#notice");
+
+        notice.hidden = true;
+        notice.classList.remove("is-error");
+      }
+
+      async function init() {
+        try {
+          setNotice("正在加载分析数据...");
+          await loadReportData();
+
+          const answers = getStoredAnswers();
+
+          if (hasCompleteAnswers(answers)) {
+            const result = calculateResult(answers);
+            renderReport(result.winner, result.scores);
+            hideNotice();
+          } else {
+            const defaultType = typeOrder[0];
+            const questionCount = Object.keys(scoreMap).length;
+
+            setNotice(`没有读取到完整答题数据。当前展示的是默认示例报告，请从测试页完成 ${questionCount} 题后再查看真实结果。`);
+            renderReport(defaultType, Object.fromEntries(typeOrder.map((type) => [type, 0])));
+          }
+        } catch (error) {
+          setNotice("分析数据加载失败，请刷新页面重试。", true);
+          console.error(error);
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>

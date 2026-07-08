@@ -1,0 +1,20 @@
+{
+  "typeOrder": ["procrastinator", "survivor", "explorer", "creator"],
+  "scoreMap": {
+    "q1": { "A": "explorer", "B": "procrastinator", "C": "creator", "D": "procrastinator" },
+    "q2": { "A": "explorer", "B": "procrastinator", "C": "creator", "D": "survivor" },
+    "q3": { "A": "survivor", "B": "procrastinator", "C": "creator", "D": "explorer" },
+    "q4": { "A": "procrastinator", "B": "procrastinator", "C": "explorer", "D": "survivor" },
+    "q5": { "A": "explorer", "B": "survivor", "C": "explorer", "D": "creator" },
+    "q6": { "A": "explorer", "B": "procrastinator", "C": "explorer", "D": "survivor" },
+    "q7": { "A": "explorer", "B": "procrastinator", "C": "survivor", "D": "survivor" },
+    "q8": { "A": "explorer", "B": "procrastinator", "C": "creator", "D": "survivor" },
+    "q9": { "A": "explorer", "B": "procrastinator", "C": "creator", "D": "survivor" },
+    "q10": { "A": "survivor", "B": "survivor", "C": "creator", "D": "procrastinator" },
+    "q11": { "A": "explorer", "B": "procrastinator", "C": "creator", "D": "survivor" },
+    "q12": { "A": "explorer", "B": "procrastinator", "C": "survivor", "D": "survivor" },
+    "q13": { "A": "explorer", "B": "procrastinator", "C": "creator", "D": "explorer" },
+    "q14": { "A": "explorer", "B": "procrastinator", "C": "survivor", "D": "explorer" },
+    "q15": { "A": "explorer", "B": "procrastinator", "C": "creator", "D": "survivor" }
+  }
+}

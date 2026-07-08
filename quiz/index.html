@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>人生阶段探索 - 人生阶段画像器</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #181715;
+        --muted: #67615a;
+        --paper: #f7f3ec;
+        --panel: #fffdf8;
+        --line: #d9d0c2;
+        --accent: #235347;
+        --accent-dark: #173a32;
+        --warm: #a54f2b;
+        --danger: #9d3327;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(90deg, rgba(24, 23, 21, 0.045) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(24, 23, 21, 0.035) 1px, transparent 1px),
+          var(--paper);
+        background-size: 44px 44px;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+      }
+
+      main {
+        width: min(760px, 100%);
+        min-height: 100vh;
+        margin: 0 auto;
+        display: grid;
+        align-content: center;
+        gap: 28px;
+        padding: 34px 20px 56px;
+      }
+
+      .top {
+        display: grid;
+        gap: 18px;
+      }
+
+      .nav-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .back {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .back:hover {
+        color: var(--accent-dark);
+        text-decoration: underline;
+      }
+
+      .brand {
+        color: var(--accent-dark);
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: 900;
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      .progress-row {
+        display: grid;
+        gap: 10px;
+      }
+
+      .progress-text {
+        color: var(--muted);
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .progress-track {
+        width: 100%;
+        height: 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        display: block;
+        width: 0%;
+        height: 100%;
+        background: var(--warm);
+        transition: width 180ms ease;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: clamp(22px, 5vw, 38px);
+        background: rgba(255, 253, 248, 0.86);
+        box-shadow: 0 24px 68px rgba(24, 23, 21, 0.09);
+      }
+
+      form {
+        display: grid;
+        gap: 28px;
+      }
+
+      .question-kicker {
+        display: block;
+        margin-bottom: 12px;
+        color: var(--warm);
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(26px, 4vw, 40px);
+        line-height: 1.22;
+        letter-spacing: 0;
+      }
+
+      .options {
+        display: grid;
+        gap: 12px;
+      }
+
+      .option {
+        display: grid;
+        grid-template-columns: 24px 36px 1fr;
+        gap: 13px;
+        align-items: start;
+        min-height: 58px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+        background: var(--panel);
+        color: var(--ink);
+        cursor: pointer;
+        transition:
+          border-color 160ms ease,
+          background 160ms ease,
+          transform 160ms ease;
+      }
+
+      .option:hover {
+        border-color: rgba(35, 83, 71, 0.52);
+        transform: translateY(-1px);
+      }
+
+      .option input {
+        width: 18px;
+        height: 18px;
+        margin: 3px 0 0;
+        accent-color: var(--accent);
+      }
+
+      .option-letter {
+        color: var(--accent-dark);
+        font-weight: 900;
+      }
+
+      .option-text {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .option:has(input:checked) {
+        border-color: var(--accent);
+        background: #eef4ef;
+      }
+
+      .bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        border-top: 1px solid var(--line);
+        padding-top: 20px;
+      }
+
+      .status {
+        min-height: 22px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .status.is-error {
+        color: var(--danger);
+        font-weight: 800;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 52px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--accent);
+        border-radius: 8px;
+        padding: 0 22px;
+        font-size: 16px;
+        font-weight: 900;
+        cursor: pointer;
+        transition:
+          transform 160ms ease,
+          background 160ms ease,
+          box-shadow 160ms ease,
+          opacity 160ms ease;
+      }
+
+      .button.primary {
+        background: var(--accent);
+        color: #fffdf8;
+        box-shadow: 0 16px 36px rgba(35, 83, 71, 0.2);
+      }
+
+      .button.secondary {
+        background: transparent;
+        color: var(--accent-dark);
+      }
+
+      .button:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      .button.primary:hover:not(:disabled) {
+        background: var(--accent-dark);
+        box-shadow: 0 18px 42px rgba(23, 58, 50, 0.24);
+      }
+
+      .button:disabled {
+        cursor: not-allowed;
+        opacity: 0.54;
+        transform: none;
+      }
+
+      .button[hidden] {
+        display: none;
+      }
+
+      .button:focus-visible,
+      .back:focus-visible,
+      .option:focus-within {
+        outline: 3px solid rgba(165, 79, 43, 0.35);
+        outline-offset: 4px;
+      }
+
+      @media (max-width: 640px) {
+        main {
+          align-content: start;
+          padding: 26px 14px 42px;
+        }
+
+        .nav-row {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .card {
+          padding: 20px 14px;
+        }
+
+        .option {
+          grid-template-columns: 22px 30px 1fr;
+          padding: 14px 12px;
+        }
+
+        .bottom {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .buttons {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        .button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <div class="nav-row">
+          <div class="brand">人生阶段探索</div>
+          <a class="back" href="/">返回首页</a>
+        </div>
+        <div class="progress-row" aria-live="polite">
+          <div class="progress-text" id="progressText">正在加载题目</div>
+          <div class="progress-track" aria-hidden="true">
+            <span class="progress-bar" id="progressBar"></span>
+          </div>
+        </div>
+      </header>
+
+      <section class="card">
+        <form id="quizForm">
+          <div id="questionView"></div>
+          <div class="bottom">
+            <div class="status" id="statusText">正在加载题目...</div>
+            <div class="buttons">
+              <button class="button secondary" id="prevButton" type="button" disabled>上一题</button>
+              <button class="button primary" id="nextButton" type="submit" hidden disabled>
+                生成我的人生画像
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script>
+      let questions = [];
+      let currentIndex = 0;
+      let autoAdvanceTimer = null;
+
+      const state = {
+        answers: {}
+      };
+
+      const questionViewEl = document.querySelector("#questionView");
+      const formEl = document.querySelector("#quizForm");
+      const progressTextEl = document.querySelector("#progressText");
+      const progressBarEl = document.querySelector("#progressBar");
+      const statusTextEl = document.querySelector("#statusText");
+      const prevButtonEl = document.querySelector("#prevButton");
+      const nextButtonEl = document.querySelector("#nextButton");
+
+      async function loadQuestions() {
+        try {
+          const response = await fetch("/data/questions.json");
+
+          if (!response.ok) {
+            throw new Error("Failed to load questions.");
+          }
+
+          questions = await response.json();
+          renderCurrentQuestion();
+        } catch (error) {
+          statusTextEl.textContent = "题目加载失败，请刷新页面重试。";
+          statusTextEl.classList.add("is-error");
+          console.error(error);
+        }
+      }
+
+      function renderCurrentQuestion() {
+        clearAutoAdvanceTimer();
+
+        const question = questions[currentIndex];
+
+        if (!question) {
+          questionViewEl.innerHTML = "";
+          return;
+        }
+
+        const selectedAnswer = state.answers[question.id] || "";
+        const options = question.options
+          .map((option) => {
+            const inputId = `${question.id}-${option.value}`;
+            const checked = option.value === selectedAnswer ? "checked" : "";
+
+            return `
+              <label class="option" for="${inputId}">
+                <input
+                  id="${inputId}"
+                  type="radio"
+                  name="${question.id}"
+                  value="${option.value}"
+                  ${checked}
+                  required
+                >
+                <span class="option-letter">${option.value}</span>
+                <span class="option-text">${option.text}</span>
+              </label>
+            `;
+          })
+          .join("");
+
+        questionViewEl.innerHTML = `
+          <div class="question-kicker">第${currentIndex + 1}题</div>
+          <h1>${question.text}</h1>
+          <div class="options">${options}</div>
+        `;
+
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const total = questions.length;
+        const current = total ? currentIndex + 1 : 0;
+        const question = questions[currentIndex];
+        const hasAnswer = question ? Boolean(state.answers[question.id]) : false;
+        const isLastQuestion = total > 0 && currentIndex === total - 1;
+        const percent = total ? Math.round((current / total) * 100) : 0;
+
+        progressTextEl.textContent = total ? `${current}/${total}` : "正在加载题目";
+        progressBarEl.style.width = `${percent}%`;
+        prevButtonEl.disabled = !total || currentIndex === 0;
+        nextButtonEl.hidden = !isLastQuestion;
+        nextButtonEl.disabled = !total || !isLastQuestion || !hasAnswer;
+        nextButtonEl.textContent = "生成我的人生画像";
+        statusTextEl.textContent = getStatusText(hasAnswer, isLastQuestion);
+        statusTextEl.classList.remove("is-error");
+      }
+
+      function getStatusText(hasAnswer, isLastQuestion) {
+        if (isLastQuestion) {
+          return hasAnswer
+            ? "最后一步，点击按钮生成报告。"
+            : "请选择最后一个答案，然后生成报告。";
+        }
+
+        return hasAnswer ? "已记录，正在进入下一题。" : "点击一个选项后，会自动进入下一题。";
+      }
+
+      function clearAutoAdvanceTimer() {
+        if (autoAdvanceTimer) {
+          window.clearTimeout(autoAdvanceTimer);
+          autoAdvanceTimer = null;
+        }
+      }
+
+      function chooseAnswer(input) {
+        const question = questions[currentIndex];
+
+        if (!question || input.name !== question.id) {
+          return;
+        }
+
+        input.checked = true;
+        state.answers[input.name] = input.value;
+        updateProgress();
+
+        if (currentIndex < questions.length - 1) {
+          clearAutoAdvanceTimer();
+
+          autoAdvanceTimer = window.setTimeout(() => {
+            currentIndex += 1;
+            renderCurrentQuestion();
+          }, 220);
+        }
+      }
+
+      function saveAndGoToResult() {
+        sessionStorage.setItem(
+          "lifeStageQuizAnswers",
+          JSON.stringify({
+            answers: state.answers,
+            answeredAt: new Date().toISOString()
+          })
+        );
+
+        window.location.href = "/result";
+      }
+
+      loadQuestions();
+
+      questionViewEl.addEventListener("click", (event) => {
+        const optionEl = event.target.closest(".option");
+
+        if (!optionEl) {
+          return;
+        }
+
+        const input = optionEl.querySelector('input[type="radio"]');
+
+        if (!input) {
+          return;
+        }
+
+        event.preventDefault();
+        chooseAnswer(input);
+      });
+
+      formEl.addEventListener("change", (event) => {
+        const target = event.target;
+
+        if (target instanceof HTMLInputElement && target.type === "radio") {
+          chooseAnswer(target);
+        }
+      });
+
+      prevButtonEl.addEventListener("click", () => {
+        if (currentIndex > 0) {
+          clearAutoAdvanceTimer();
+          currentIndex -= 1;
+          renderCurrentQuestion();
+        }
+      });
+
+      formEl.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (!questions.length) {
+          statusTextEl.textContent = "题目还没有加载完成，请稍等。";
+          statusTextEl.classList.add("is-error");
+          return;
+        }
+
+        const question = questions[currentIndex];
+
+        if (!state.answers[question.id]) {
+          statusTextEl.textContent = "请先选择一个答案。";
+          statusTextEl.classList.add("is-error");
+          return;
+        }
+
+        if (currentIndex < questions.length - 1) {
+          statusTextEl.textContent = "请选择一个答案，系统会自动进入下一题。";
+          statusTextEl.classList.add("is-error");
+          return;
+        }
+
+        saveAndGoToResult();
+      });
+    </script>
+  </body>
+</html>
