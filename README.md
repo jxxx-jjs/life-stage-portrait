@@ -83,7 +83,7 @@
 
 ## 本地运行方式
 
-项目是纯静态站点，但由于页面需要通过 `fetch("/data/*.json")` 读取 JSON，不建议直接用 `file://` 打开 HTML。
+项目是纯静态站点，但由于页面需要通过 `fetch()` 读取 `data/*.json`，不建议直接用 `file://` 打开 HTML。
 
 在项目根目录运行：
 
@@ -147,6 +147,38 @@ http://127.0.0.1:8000/
 /data/questions.json
 /data/scoring.json
 /data/reports.json
+```
+
+说明：`_redirects` 是 Cloudflare Pages 的静态重定向规则文件，用于兼容 `/start`、`/quiz`、`/result` 这类无尾斜杠访问。GitHub Pages 不会执行 `_redirects`，但保留该文件不会影响 GitHub Pages 访问。
+
+## GitHub Pages 部署
+
+当前项目已经使用相对路径，适合部署到 GitHub Pages 项目子路径：
+
+```text
+https://jxxx-jjs.github.io/life-stage-portrait/
+```
+
+部署方式：
+
+1. 将代码推送到 GitHub 仓库 `jxxx-jjs/life-stage-portrait`
+2. 打开仓库 `Settings`
+3. 进入 `Pages`
+4. Source 选择 `Deploy from a branch`
+5. Branch 选择 `main`
+6. Folder 选择 `/ (root)`
+7. 保存后等待 GitHub Pages 构建完成
+
+GitHub Pages 部署后确认以下路径可以访问：
+
+```text
+https://jxxx-jjs.github.io/life-stage-portrait/
+https://jxxx-jjs.github.io/life-stage-portrait/start/
+https://jxxx-jjs.github.io/life-stage-portrait/quiz/
+https://jxxx-jjs.github.io/life-stage-portrait/result/
+https://jxxx-jjs.github.io/life-stage-portrait/data/questions.json
+https://jxxx-jjs.github.io/life-stage-portrait/data/scoring.json
+https://jxxx-jjs.github.io/life-stage-portrait/data/reports.json
 ```
 
 ## 隐私说明

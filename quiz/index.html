@@ -312,7 +312,7 @@
       <header class="top">
         <div class="nav-row">
           <div class="brand">人生阶段探索</div>
-          <a class="back" href="/">返回首页</a>
+          <a class="back" href="../">返回首页</a>
         </div>
         <div class="progress-row" aria-live="polite">
           <div class="progress-text" id="progressText">正在加载题目</div>
@@ -357,7 +357,7 @@
 
       async function loadQuestions() {
         try {
-          const response = await fetch("/data/questions.json");
+          const response = await fetch("../data/questions.json");
 
           if (!response.ok) {
             throw new Error("Failed to load questions.");
@@ -479,7 +479,7 @@
           })
         );
 
-        window.location.href = "/result/";
+        window.location.href = "../result/";
       }
 
       loadQuestions();

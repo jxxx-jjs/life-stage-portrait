@@ -534,8 +534,8 @@
   <body>
     <main>
       <nav class="nav" aria-label="页面导航">
-        <a href="/">返回首页</a>
-        <a href="/quiz/">重新测试</a>
+        <a href="../">返回首页</a>
+        <a href="../quiz/">重新测试</a>
       </nav>
 
       <div class="notice" id="notice" hidden aria-live="polite">
@@ -646,8 +646,8 @@
         </section>
 
         <footer class="actions">
-          <a class="button" href="/quiz/">重新测试</a>
-          <a class="button secondary" href="/">回到首页</a>
+          <a class="button" href="../quiz/">重新测试</a>
+          <a class="button secondary" href="../">回到首页</a>
         </footer>
       </article>
     </main>
@@ -670,8 +670,8 @@
 
       async function loadReportData() {
         const [scoring, reportTemplates] = await Promise.all([
-          loadJson("/data/scoring.json"),
-          loadJson("/data/reports.json")
+          loadJson("../data/scoring.json"),
+          loadJson("../data/reports.json")
         ]);
 
         typeOrder = scoring.typeOrder;

@@ -224,7 +224,7 @@
   <body>
     <main>
       <nav class="nav" aria-label="页面导航">
-        <a href="/">返回首页</a>
+        <a href="../">返回首页</a>
       </nav>
 
       <section class="start-panel" aria-labelledby="page-title">
@@ -260,8 +260,8 @@
         </section>
 
         <div class="actions">
-          <a class="button" href="/quiz/">开始答题</a>
-          <a class="button secondary" href="/">我再想想</a>
+          <a class="button" href="../quiz/">开始答题</a>
+          <a class="button secondary" href="../">我再想想</a>
         </div>
       </section>
     </main>
@@ -269,7 +269,7 @@
     <script>
       async function updateQuestionCount() {
         try {
-          const response = await fetch("/data/questions.json");
+          const response = await fetch("../data/questions.json");
 
           if (!response.ok) {
             return;
