@@ -4,6 +4,7 @@ const path = require("node:path");
 
 const rootDir = __dirname;
 const port = Number(process.env.PORT || 8000);
+const host = process.env.HOST || "0.0.0.0";
 
 const server = http.createServer(async (req, res) => {
   try {
@@ -18,8 +19,8 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(port, "127.0.0.1", () => {
-  console.log(`Server running at http://127.0.0.1:${port}/`);
+server.listen(port, host, () => {
+  console.log(`Server running at http://${host}:${port}/`);
 });
 
 function serveStatic(requestUrl, res) {
