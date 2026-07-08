@@ -2,7 +2,7 @@
 
 人生阶段画像器是一个轻量级的人生阶段测试产品。用户完成 15 道单选题后，系统会基于本地 JSON 评分规则生成一份人生阶段分析报告，并提供一张适合截图分享的结果卡片。
 
-当前版本是公开测试用 MVP：不需要登录，不接数据库，不接支付，不依赖外部分析服务。
+当前版本是公开测试用 MVP：不需要登录，不接数据库，不接支付，不依赖外部分析服务，也不需要 Node 服务端运行。
 
 ## 产品介绍
 
@@ -46,16 +46,9 @@
 - 页面：原生 HTML
 - 样式：原生 CSS
 - 交互：原生 JavaScript
-- 服务：Node.js `http` 模块
 - 数据：JSON 文件
 - 状态保存：浏览器 `sessionStorage`
-
-服务端 `server.js` 负责：
-
-- 返回首页、开始页、答题页、结果页
-- 提供 `data/questions.json`
-- 提供 `data/scoring.json`
-- 提供 `data/reports.json`
+- 部署形态：纯静态站点
 
 结果计算流程：
 
@@ -73,33 +66,35 @@
 ```text
 .
 ├── README.md
-├── index.html              # 首页
-├── package.json            # 启动脚本
-├── server.js               # Node 本地服务
+├── _redirects             # Cloudflare Pages 静态重定向规则
+├── index.html             # 首页
+├── package.json           # 本地静态预览脚本
 ├── data/
-│   ├── questions.json      # 15 道测试题
-│   ├── scoring.json        # 本地评分规则
-│   └── reports.json        # 4 种人生阶段报告模板
+│   ├── questions.json     # 15 道测试题
+│   ├── scoring.json       # 本地评分规则
+│   └── reports.json       # 4 种人生阶段报告模板
 ├── start/
-│   └── index.html          # 测试开始说明页
+│   └── index.html         # 测试开始说明页
 ├── quiz/
-│   └── index.html          # 答题页
+│   └── index.html         # 答题页
 └── result/
-    └── index.html          # 结果报告页
+    └── index.html         # 结果报告页
 ```
 
 ## 本地运行方式
 
-安装 Node.js 后，在项目根目录运行：
+项目是纯静态站点，但由于页面需要通过 `fetch("/data/*.json")` 读取 JSON，不建议直接用 `file://` 打开 HTML。
+
+在项目根目录运行：
 
 ```bash
 npm run dev
 ```
 
-或：
+或直接运行：
 
 ```bash
-npm start
+python3 -m http.server 8000
 ```
 
 启动后访问：
@@ -119,11 +114,11 @@ http://127.0.0.1:8000/
 
 ## 环境要求
 
-- Node.js 18 或更高版本
 - 支持现代 JavaScript 的浏览器
-- 手机端浏览器可正常访问本地或部署后的公网地址
+- 本地预览需要 Python 3，或任意静态文件服务器
+- Cloudflare Pages 部署不需要安装依赖
 
-当前 MVP 不需要配置环境变量，也不需要安装第三方依赖。
+当前 MVP 不需要配置环境变量，也不需要后端服务。
 
 ## 数据说明
 
@@ -132,6 +127,27 @@ http://127.0.0.1:8000/
 - 报告文案在 `data/reports.json`
 
 如果用户直接打开 `/result/`，页面会展示默认示例报告，并提示需要完成测试后查看真实结果。
+
+## Cloudflare Pages 部署
+
+推荐配置：
+
+- Framework preset：`None`
+- Build command：留空
+- Build output directory：项目根目录，通常填写 `/` 或 `.`
+- Environment variables：不需要配置
+
+部署后确认以下路径可以访问：
+
+```text
+/
+/start/
+/quiz/
+/result/
+/data/questions.json
+/data/scoring.json
+/data/reports.json
+```
 
 ## 隐私说明
 
@@ -147,6 +163,5 @@ http://127.0.0.1:8000/
 - 增加基础自动化测试和端到端流程测试
 - 增加分享卡片导出图片能力
 - 增加结果复制和分享能力
-- 增加线上部署说明
 - 优化移动端视觉细节和可访问性
 - 继续打磨题目、评分维度和报告文案

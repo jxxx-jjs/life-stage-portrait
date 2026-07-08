@@ -1,6 +1,8 @@
 {
+  "name": "life-stage-portrait",
+  "version": "1.0.0",
+  "private": true,
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "dev": "python3 -m http.server 8000"
   }
 }
